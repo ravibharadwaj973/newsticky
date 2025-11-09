@@ -1,12 +1,37 @@
-
-// components/NotesGrid.js
+// components/NotesGrid.tsx
 import { useState, useEffect } from 'react';
 import StickyNote from './StickyNote';
 import { useAuth } from '../context/AuthContext';
 
+// Define TypeScript interfaces
+interface Position {
+  x: number;
+  y: number;
+}
+
+interface Note {
+  _id: string;
+  title: string;
+  content: string;
+  color: string;
+  position: Position;
+  user: string;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface NoteUpdates {
+  title?: string;
+  content?: string;
+  color?: string;
+  position?: Position;
+  isArchived?: boolean;
+}
+
 export default function NotesGrid() {
-  const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -15,7 +40,7 @@ export default function NotesGrid() {
     }
   }, [user]);
 
-  const fetchNotes = async () => {
+  const fetchNotes = async (): Promise<void> => {
     try {
       const res = await fetch('/api/notes');
       const data = await res.json();
@@ -27,7 +52,7 @@ export default function NotesGrid() {
     }
   };
 
-  const createNote = async () => {
+  const createNote = async (): Promise<void> => {
     const newNote = {
       title: 'New Note',
       content: 'Start typing...',
@@ -48,7 +73,7 @@ export default function NotesGrid() {
     }
   };
 
-  const updateNote = async (id, updates) => {
+  const updateNote = async (id: string, updates: NoteUpdates): Promise<void> => {
     try {
       await fetch(`/api/notes/${id}`, {
         method: 'PUT',
@@ -64,7 +89,7 @@ export default function NotesGrid() {
     }
   };
 
-  const deleteNote = async (id) => {
+  const deleteNote = async (id: string): Promise<void> => {
     try {
       await fetch(`/api/notes/${id}`, { method: 'DELETE' });
       setNotes(notes.filter(note => note._id !== id));
@@ -73,7 +98,7 @@ export default function NotesGrid() {
     }
   };
 
-  const updateNotePosition = async (id, position) => {
+  const updateNotePosition = async (id: string, position: Position): Promise<void> => {
     try {
       await fetch(`/api/notes/${id}`, {
         method: 'PUT',
