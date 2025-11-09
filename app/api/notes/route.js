@@ -16,7 +16,7 @@ export async function GET(request) {
     }
 
     await dbConnect();
-    const notes = await Note.find({ user: userId, isArchived: false })
+    const notes = await Note.find({git push -u origin main user: userId, isArchived: false })
       .sort({ updatedAt: -1 });
     
     return NextResponse.json({ notes });
