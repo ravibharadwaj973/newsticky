@@ -2,7 +2,7 @@
 
 import { useAuth } from "../context/AuthContext";
 
-export default function Layout({ children }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
 
   return (
