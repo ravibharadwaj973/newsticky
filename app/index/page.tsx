@@ -1,22 +1,29 @@
-"use client"
-// pages/index.js
+"use client";
+
 import { useAuth } from '../context/AuthContext';
 import LoginForm from '../_components/LoginForm';
 import RegisterForm from '../_components/RegisterForm';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { user, loading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
+
+  // ✅ Use effect to handle redirect safely
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (user) {
-    // Redirect to dashboard handled by useEffect in AuthContext
-    return <div>Redirecting...</div>;
-  }
+  // Don't render login/register if redirect is happening
+  if (user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
@@ -26,13 +33,15 @@ export default function Home() {
         </h1>
         
         {isLogin ? <LoginForm /> : <RegisterForm />}
-        
+
         <div className="text-center mt-4">
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-blue-600 hover:text-blue-800"
           >
-            {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
+            {isLogin
+              ? "Don't have an account? Register"
+              : "Already have an account? Login"}
           </button>
         </div>
       </div>
